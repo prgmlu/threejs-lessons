@@ -11,6 +11,7 @@
 	<body>
 		<script type="module">
             import { OrbitControls } from 'https://unpkg.com/three@0.125.2/examples/jsm/controls/OrbitControls.js';
+            import { GLTFLoader } from 'https://unpkg.com/three@0.125.2/examples/jsm/loaders/GLTFLoader.js';
 
 			const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -23,9 +24,24 @@
 			camera.position.x = 2;
 
             var controls = new OrbitControls(camera, renderer.domElement);
+
+			var lightA = new THREE.DirectionalLight(0xffffff, 1);
+			var lightB = new THREE.DirectionalLight(0xffffff, 1);
+			lightB.position.y = -1;
+			scene.add(lightA);
+			scene.add(lightB);
+
+			var ball = null;
+
+			var loader = new GLTFLoader();
+			loader.load('./ball.glb', function(model){
+				ball = model.scene;
+				scene.add(ball);
+			})
+
             
 			const geometry = new THREE.BoxBufferGeometry();
-			const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+			const material = new THREE.MeshStandardMaterial( { color: 0xff0000 } );
 
 			const cube = new THREE.Mesh( geometry, material );
 			scene.add( cube );
@@ -50,11 +66,15 @@
 				requestAnimationFrame( animate );
 				counter +=1;
 
-				cube.position.x = 10 * Math.sin(counter/30);
 
-				cube.position.y = 10 * Math.cos(counter/22);
+				if (ball){
 
-				cube.position.z = 10 * Math.cos(counter/17);
+					ball.position.x = 10 * Math.sin(counter/30);
+					
+					ball.position.y = 10 * Math.cos(counter/22);
+					
+					ball.position.z = 10 * Math.cos(counter/17);
+				}
 
 
                 controls.update()
