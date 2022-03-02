@@ -50,6 +50,48 @@
 			scene.add( cube );
 
 			var counter = 0;
+
+			var raycaster = new THREE.Raycaster();
+			var mouseIsDown = false;
+			var intersectObject = null;
+
+			addEventListener('pointerup',()=>{
+				mouseIsDown = false;
+			})
+
+			addEventListener('mousemove',(e)=>{
+					cube.position.x = normalizedX;
+				if (mouseIsDown && intersectObject){
+					alert('gibi')
+
+					var normalizedX = 2  * e.clientX / window.innerWidth -1;
+					var normalizedY = -1 * ( 2* e.clientY / window.innerHeight -1);
+
+					cube.position.x = normalizedX;
+					cube.position.x = normalizedY;
+
+					
+				}
+			})
+
+			addEventListener('pointerdown', (e)=>{
+
+				mouseIsDown = true;
+
+				var normalizedX = 2  * e.clientX / window.innerWidth -1;
+				var normalizedY = -1 * ( 2* e.clientY / window.innerHeight -1);
+				raycaster.setFromCamera({x:normalizedX,y:normalizedY}, camera );
+
+				var intersects = raycaster.intersectObjects([cube]);
+				if (intersects){
+					cube.material.color.set('green');
+					intersectObject = true;
+				}
+				
+
+			})
+
+
 			
 			addEventListener('keydown',(e)=>{
 				if(e.code === 'Space'){
@@ -72,11 +114,11 @@
 
 				if (ball){
 
-					ball.position.x = 10 * Math.sin(counter/30);
+					ball.position.x = 10 * Math.sin(.2*counter/30);
 					
-					ball.position.y = 10 * Math.cos(counter/22);
+					ball.position.y = 10 * Math.cos(.2*counter/22);
 					
-					ball.position.z = 10 * Math.cos(counter/17);
+					ball.position.z = 10 * Math.cos(.2*counter/17);
 				}
 
 
