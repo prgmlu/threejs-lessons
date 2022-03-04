@@ -36,7 +36,6 @@
 			var ball = null;
 
 			var loader = new GLTFLoader();
-			// loader.load('./ball2.gltf', function(model){
 			loader.load('./ball.glb', function(model){
 				ball = model.scene;
 				scene.add(ball);
@@ -55,28 +54,7 @@
 			var mouseIsDown = false;
 			var intersectObject = null;
 
-			addEventListener('pointerup',()=>{
-				mouseIsDown = false;
-			})
-
-			addEventListener('mousemove',(e)=>{
-					cube.position.x = normalizedX;
-				if (mouseIsDown && intersectObject){
-					alert('gibi')
-
-					var normalizedX = 2  * e.clientX / window.innerWidth -1;
-					var normalizedY = -1 * ( 2* e.clientY / window.innerHeight -1);
-
-					cube.position.x = normalizedX;
-					cube.position.x = normalizedY;
-
-					
-				}
-			})
-
-			addEventListener('pointerdown', (e)=>{
-
-				mouseIsDown = true;
+			addEventListener('click', (e)=>{
 
 				var normalizedX = 2  * e.clientX / window.innerWidth -1;
 				var normalizedY = -1 * ( 2* e.clientY / window.innerHeight -1);
