@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+        <script src="https://unpkg.com/three@0.125.2/build/three.js"></script>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script type="module">
+            import { OrbitControls } from 'https://unpkg.com/three@0.125.2/examples/jsm/controls/OrbitControls.js';
+            import { DragControls } from 'https://unpkg.com/three@0.125.2/examples/jsm/controls/DragControls.js';
+            import { GLTFLoader } from 'https://unpkg.com/three@0.125.2/examples/jsm/loaders/GLTFLoader.js';
+
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			camera.position.z = 5;
+			camera.position.y = 3;
+			camera.position.x = 2;
+
+            // var controls = new OrbitControls(camera, renderer.domElement);
+
+			var lightA = new THREE.DirectionalLight(0xffffff, 1);
+			var lightB = new THREE.DirectionalLight(0xffffff, 1);
+			lightB.position.y = -1;
+			scene.background = new THREE.Color('gray')
+			// scene.background = new  THREE.Color('gray');
+			scene.add(lightA);
+			scene.add(lightB);
+
+			var ball = null;
+
+			var loader = new GLTFLoader();
+			loader.load('./ball.glb', function(model){
+				ball = model.scene;
+				scene.add(ball);
+			})
+
+            
+			const geometry = new THREE.BoxBufferGeometry();
+			const material = new THREE.MeshStandardMaterial( { color: 0xff0000 } );
+
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+
+            const controls = new DragControls( [cube], camera, renderer.domElement );
+
+
+			var counter = 0;
+
+			var raycaster = new THREE.Raycaster();
+			var mouseIsDown = false;
+			var intersectObject = null;
+
+			addEventListener('click', (e)=>{
+
+				var normalizedX = 2  * e.clientX / window.innerWidth -1;
+				var normalizedY = -1 * ( 2* e.clientY / window.innerHeight -1);
+				raycaster.setFromCamera({x:normalizedX,y:normalizedY}, camera );
+
+				var intersects = raycaster.intersectObjects([cube]);
+				if (intersects){
+					cube.material.color.set('green');
+					intersectObject = true;
+				}
+				
+
+			})
+
+
+			
+			addEventListener('keydown',(e)=>{
+				if(e.code === 'Space'){
+					cube.material.color.set(Math.random()*0xffffff);
+				}
+				
+				if(e.code === 'ArrowLeft'){
+					cube.position.x -= 1;
+				}
+				
+				if(e.code === 'ArrowRight'){
+					cube.position.x += 1;
+				}
+			})
+			
+			const animate = function () {
+				requestAnimationFrame( animate );
+				counter +=1;
+
+
+				if (ball){
+
+					ball.position.x = 10 * Math.sin(.2*counter/30);
+					
+					ball.position.y = 10 * Math.cos(.2*counter/22);
+					
+					ball.position.z = 10 * Math.cos(.2*counter/17);
+				}
+
+
+                // controls.update()
+				
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
